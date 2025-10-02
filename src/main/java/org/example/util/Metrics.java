@@ -1,48 +1,86 @@
 package org.example.util;
 
 public class Metrics {
+    // --- recursion depth tracking ---
+    private int currentDepth = 0;   // текущая глубина
+    private int peakDepth = 0;      // максимальная достигнутая глубина
+
+    // --- operation counters ---
     private long comparisons = 0;
     private long allocations = 0;
-    private long recursionDepth = 0;
-    private long maxDepth = 0;
+
+    // --- timing ---
     private long startTime;
-    private long endTime;
+    private long elapsedMs;
 
-    private static final ThreadLocal<Long> currentDepth = ThreadLocal.withInitial(() -> 0L);
-
-    public void reset() {
-        comparisons = 0;
-        allocations = 0;
-        recursionDepth = 0;
-        maxDepth = 0;
-        startTime = 0;
-        endTime = 0;
-        currentDepth.set(0L);
-    }
-
-    public void incComparisons() { comparisons++; }
-    public void incAllocations() { allocations++; }
-
+    // ===== Recursion =====
     public void enterRecursion() {
-        long d = currentDepth.get() + 1;
-        currentDepth.set(d);
-        recursionDepth = d;
-        if (recursionDepth > maxDepth) {
-            maxDepth = recursionDepth;
+        currentDepth++;
+        if (currentDepth > peakDepth) {
+            peakDepth = currentDepth;
         }
     }
 
     public void exitRecursion() {
-        long d = currentDepth.get() - 1;
-        currentDepth.set(d);
-        recursionDepth = d;
+        if (currentDepth > 0) {
+            currentDepth--;
+        }
     }
 
-    public void startTimer() { startTime = System.nanoTime(); }
-    public void stopTimer() { endTime = System.nanoTime(); }
-    public long getTimeMs() { return (endTime - startTime) / 1_000_000; }
+    /** Текущая глубина рекурсии */
+    public int getMaxDepth() {
+        return currentDepth;
+    }
 
-    public long getComparisons() { return comparisons; }
-    public long getAllocations() { return allocations; }
-    public long getMaxDepth() { return maxDepth; }
+    /** Исторический максимум (для отчётов) */
+    public int getPeakDepth() {
+        return peakDepth;
+    }
+
+    // ===== Comparisons & Allocations =====
+    public void incComparisons() {
+        comparisons++;
+    }
+
+    public void addComparisons(long c) {
+        comparisons += c;
+    }
+
+    public long getComparisons() {
+        return comparisons;
+    }
+
+    public void incAllocations() {
+        allocations++;
+    }
+
+    public void addAllocations(long a) {
+        allocations += a;
+    }
+
+    public long getAllocations() {
+        return allocations;
+    }
+
+    // ===== Timing =====
+    public void startTimer() {
+        startTime = System.nanoTime();
+    }
+
+    public void stopTimer() {
+        elapsedMs = (System.nanoTime() - startTime) / 1_000_000;
+    }
+
+    public long getTimeMs() {
+        return elapsedMs;
+    }
+
+    // ===== Reset =====
+    public void reset() {
+        currentDepth = 0;
+        peakDepth = 0;
+        comparisons = 0;
+        allocations = 0;
+        elapsedMs = 0;
+    }
 }
