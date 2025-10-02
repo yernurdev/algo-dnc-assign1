@@ -1,6 +1,7 @@
 package org.example.algo;
 
 import org.junit.jupiter.api.Test;
+import org.example.util.Metrics;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -16,7 +17,8 @@ class DeterministicSelectTest {
         Arrays.sort(sorted);
 
         for (int k = 1; k <= arr.length; k++) {
-            int result = DeterministicSelect.select(arr.clone(), 0, arr.length - 1, k);
+            Metrics metrics = new Metrics();
+            int result = DeterministicSelect.select(arr.clone(), 0, arr.length - 1, k, metrics);
             assertEquals(sorted[k - 1], result, "Mismatch at k=" + k);
         }
     }
@@ -24,14 +26,16 @@ class DeterministicSelectTest {
     @Test
     void testSingleElement() {
         int[] arr = {42};
-        assertEquals(42, DeterministicSelect.select(arr, 0, 0, 1));
+        Metrics metrics = new Metrics();
+        assertEquals(42, DeterministicSelect.select(arr, 0, 0, 1, metrics));
     }
 
     @Test
     void testAllEqualElements() {
         int[] arr = {5, 5, 5, 5, 5};
         for (int k = 1; k <= arr.length; k++) {
-            assertEquals(5, DeterministicSelect.select(arr.clone(), 0, arr.length - 1, k));
+            Metrics metrics = new Metrics();
+            assertEquals(5, DeterministicSelect.select(arr.clone(), 0, arr.length - 1, k, metrics));
         }
     }
 
@@ -44,7 +48,8 @@ class DeterministicSelectTest {
             Arrays.sort(sorted);
 
             for (int k = 1; k <= n; k++) {
-                int result = DeterministicSelect.select(arr.clone(), 0, arr.length - 1, k);
+                Metrics metrics = new Metrics();
+                int result = DeterministicSelect.select(arr.clone(), 0, arr.length - 1, k, metrics);
                 assertEquals(sorted[k - 1], result, "Mismatch at k=" + k + " for n=" + n);
             }
         }
