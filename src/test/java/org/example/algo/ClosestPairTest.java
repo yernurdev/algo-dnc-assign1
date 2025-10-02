@@ -1,9 +1,11 @@
 package org.example.algo;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import org.example.util.Metrics;
 
 import java.util.Random;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class ClosestPairTest {
 
@@ -14,7 +16,8 @@ class ClosestPairTest {
                 new ClosestPair.Point(3, 4),
                 new ClosestPair.Point(1, 1)
         };
-        double result = ClosestPair.closestPair(points);
+        Metrics metrics = new Metrics();
+        double result = ClosestPair.closestPair(points, metrics);
         assertEquals(Math.sqrt(2), result, 1e-9);
     }
 
@@ -24,7 +27,8 @@ class ClosestPairTest {
                 new ClosestPair.Point(5, 5),
                 new ClosestPair.Point(6, 5)
         };
-        double result = ClosestPair.closestPair(points);
+        Metrics metrics = new Metrics();
+        double result = ClosestPair.closestPair(points, metrics);
         assertEquals(1.0, result, 1e-9);
     }
 
@@ -33,10 +37,10 @@ class ClosestPairTest {
         Random rnd = new Random(42);
         for (int n = 5; n <= 200; n += 20) {
             ClosestPair.Point[] pts = new ClosestPair.Point[n];
-            for (int i = 0; i < n; i++) {
-                pts[i] = new ClosestPair.Point(rnd.nextDouble() * 1000, rnd.nextDouble() * 1000);
-            }
-            double fast = ClosestPair.closestPair(pts);
+            for (int i = 0; i < n; i++) pts[i] = new ClosestPair.Point(rnd.nextDouble() * 1000, rnd.nextDouble() * 1000);
+
+            Metrics metrics = new Metrics();
+            double fast = ClosestPair.closestPair(pts, metrics);
             double brute = bruteForce(pts);
             assertEquals(brute, fast, 1e-6, "Mismatch at n=" + n);
         }

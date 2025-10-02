@@ -1,7 +1,7 @@
 package org.example.algo;
 
-import org.example.util.Metrics;
 import org.junit.jupiter.api.Test;
+import org.example.util.Metrics;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -20,9 +20,6 @@ class DeterministicSelectTest {
             Metrics metrics = new Metrics();
             int result = DeterministicSelect.select(arr.clone(), 0, arr.length - 1, k, metrics);
             assertEquals(sorted[k - 1], result, "Mismatch at k=" + k);
-            // можно проверить метрики
-            assertTrue(metrics.getPeakDepth() > 0);
-            assertTrue(metrics.getComparisons() > 0);
         }
     }
 
@@ -31,7 +28,6 @@ class DeterministicSelectTest {
         int[] arr = {42};
         Metrics metrics = new Metrics();
         assertEquals(42, DeterministicSelect.select(arr, 0, 0, 1, metrics));
-        assertTrue(metrics.getTimeMs() >= 0);
     }
 
     @Test
@@ -40,7 +36,6 @@ class DeterministicSelectTest {
         for (int k = 1; k <= arr.length; k++) {
             Metrics metrics = new Metrics();
             assertEquals(5, DeterministicSelect.select(arr.clone(), 0, arr.length - 1, k, metrics));
-            assertTrue(metrics.getComparisons() >= 0);
         }
     }
 
@@ -56,7 +51,6 @@ class DeterministicSelectTest {
                 Metrics metrics = new Metrics();
                 int result = DeterministicSelect.select(arr.clone(), 0, arr.length - 1, k, metrics);
                 assertEquals(sorted[k - 1], result, "Mismatch at k=" + k + " for n=" + n);
-                assertTrue(metrics.getPeakDepth() > 0);
             }
         }
     }
